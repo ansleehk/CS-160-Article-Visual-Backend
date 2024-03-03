@@ -17,7 +17,7 @@ on:
 
 jobs:
   build:
-
+    name: Java Maven Build Test
     runs-on: ubuntu-latest
 
     steps:
