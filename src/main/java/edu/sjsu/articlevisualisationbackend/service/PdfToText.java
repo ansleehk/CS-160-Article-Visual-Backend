@@ -3,6 +3,7 @@ package edu.sjsu.articlevisualisationbackend.service;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.io.IOException;
 /**
  * Service _ Convert PDF to Text.
  */
+@Service
 public class PdfToText {
 
     public String pdf_to_text(String file_path) {
