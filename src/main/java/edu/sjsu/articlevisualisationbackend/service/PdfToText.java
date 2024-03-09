@@ -14,6 +14,9 @@ import java.io.IOException;
 @Service
 public class PdfToText {
 
+    public PdfToText() {
+    }
+
     public String pdf_to_text(String file_path) {
         try {
             File pdfFile = new File(file_path);
