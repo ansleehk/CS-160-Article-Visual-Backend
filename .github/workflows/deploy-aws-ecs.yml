@@ -12,7 +12,7 @@ env:
 jobs:
   deploy:
     name: Deploy
-    runs-on: macos-13-xlarge
+    runs-on: macos-14
     environment: AWS
 
     steps:
