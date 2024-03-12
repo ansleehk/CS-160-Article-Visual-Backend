@@ -1,5 +1,6 @@
 package edu.sjsu.articlevisualisationbackend.controller;
 
+import edu.sjsu.articlevisualisationbackend.service.CheckPdfSize;
 import edu.sjsu.articlevisualisationbackend.service.PdfToText;
 import edu.sjsu.articlevisualisationbackend.service.SavePdfToDisk;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +20,13 @@ import org.springframework.web.multipart.MultipartFile;
 public class FileUploadController {
     private final SavePdfToDisk savePdfToDisk;
     private final PdfToText pdfToText;
+    private final CheckPdfSize checkPdfSize;
 
     @Autowired
-    public FileUploadController(SavePdfToDisk savePdfToDisk, PdfToText pdfToText) {
+    public FileUploadController(SavePdfToDisk savePdfToDisk, PdfToText pdfToText, CheckPdfSize checkPdfSize) {
         this.savePdfToDisk = savePdfToDisk;
         this.pdfToText = pdfToText;
+        this.checkPdfSize = checkPdfSize;
     }
 
     @PostMapping("/uploadPdf")
@@ -39,6 +42,11 @@ public class FileUploadController {
             String filePath = this.savePdfToDisk.saveTempPdf();
 
             String fileText = this.pdfToText.pdf_to_text(filePath);
+
+            int countToken = this.checkPdfSize.check_pdf_size(fileText);
+
+            if (countToken >= 3500)
+                return new ResponseEntity<>("File too large", HttpStatus.BAD_REQUEST);
 
             return new ResponseEntity<>(fileText, HttpStatus.OK);
         } catch (Exception e) {
