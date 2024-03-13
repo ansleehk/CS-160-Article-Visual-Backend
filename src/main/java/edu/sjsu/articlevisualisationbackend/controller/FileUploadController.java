@@ -1,6 +1,7 @@
 package edu.sjsu.articlevisualisationbackend.controller;
 
 import edu.sjsu.articlevisualisationbackend.service.CheckPdfSize;
+import edu.sjsu.articlevisualisationbackend.service.InvalidPdfException;
 import edu.sjsu.articlevisualisationbackend.service.PdfToText;
 import edu.sjsu.articlevisualisationbackend.service.SavePdfToDisk;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +44,11 @@ public class FileUploadController {
 
             String fileText = this.pdfToText.pdf_to_text(filePath);
 
-            int countToken = this.checkPdfSize.check_pdf_size(fileText);
-
-            if (countToken >= 3500)
-                return new ResponseEntity<>("File too large", HttpStatus.BAD_REQUEST);
+            this.checkPdfSize.check_pdf_size(fileText);
 
             return new ResponseEntity<>(fileText, HttpStatus.OK);
+        } catch (InvalidPdfException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>("Could not upload the file: " + file.getOriginalFilename() + "!", HttpStatus.INTERNAL_SERVER_ERROR);
         }

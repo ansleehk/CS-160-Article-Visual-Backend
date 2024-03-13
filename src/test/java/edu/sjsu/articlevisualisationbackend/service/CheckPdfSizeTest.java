@@ -13,12 +13,12 @@ public class CheckPdfSizeTest {
     }
 
     @Test
-    public void testCheckPdfSize() {
+    public void testCheckPdfSize() throws InvalidPdfException {
         final String STRING = "Is it a file? It's a string.";
         final int EXPECTED_OUTPUT = 8;
 
-        final int text = checkPdfSize.check_pdf_size(STRING);
+        final int test = checkPdfSize.check_pdf_size(STRING);
 
-        assertEquals(EXPECTED_OUTPUT, text);
+        assertEquals(EXPECTED_OUTPUT, test);
     }
 }
