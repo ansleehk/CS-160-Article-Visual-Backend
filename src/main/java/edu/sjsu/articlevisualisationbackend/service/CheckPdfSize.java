@@ -1,5 +1,7 @@
 package edu.sjsu.articlevisualisationbackend.service;
 
+import edu.sjsu.articlevisualisationbackend.service.exception.InvalidPdfException;
+import edu.sjsu.articlevisualisationbackend.service.exception.InvalidPdfLengthException;
 import org.springframework.stereotype.Service;
 import java.util.StringTokenizer;
 
@@ -8,14 +10,15 @@ import java.util.StringTokenizer;
  */
 @Service
 public class CheckPdfSize {
-    private final int WORD_LIMIT = 3500;
+    public static final int PDF_MAX_TOKEN_LIMIT = 3500;
 
     public CheckPdfSize() {}
 
     public int check_pdf_size(String fileText) throws InvalidPdfException {
         int count = count_word(fileText);
-        if (count >= WORD_LIMIT) {
-            throw new InvalidPdfException("PDF contains more than 3500 words.");
+
+        if (count >= PDF_MAX_TOKEN_LIMIT) {
+            throw new InvalidPdfLengthException(count);
         }
         return count;
     }
