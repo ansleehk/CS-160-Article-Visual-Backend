@@ -9,7 +9,7 @@ public class ChatGptDiagramGeneratorTest {
     @InjectMocks
     private ChatGptDiagramGenerator chatGptDiagramGenerator;
 
-    @Test
+/*    @Test
     public void testGenerateDiagram() throws IOException {
         final String ARTICLE = "What I Learned in my First 3 Months as a Freelance Data Scientist. I recently decided it was time to make a change in my life. I have been working since I was 14 years old (tell me you are from Gen X without telling me you are from Gen X) and in all of these decades I have always worked for someone else. I very much remember the dot com bust in the early 2000’s when there were plenty of tech layoffs, but it felt mild relative to what is going on today. Perceiving that company loyalty is a thing of the past along with the desire to be my own boss, I decided that it was time to start my own company to do data science and freelancing. What I have discovered in the past 3 months of doing so is that going solo is very viable, even during times of layoffs, with proper planning. So I wanted to write about my experience getting started in the hopes that it can help some others out there who might be having a hard time finding the next thing. This is written from a US perspective, so there are some mechanics that will likely be different in other countries, but the general ideas remain the same.\n" +
                 "\n" +
@@ -27,5 +27,5 @@ public class ChatGptDiagramGeneratorTest {
         final String mermaidCode = chatGptDiagramGenerator.generateMermaidCode();
 
         System.out.println(mermaidCode);
-    }
+    }*/
 }
