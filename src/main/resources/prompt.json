@@ -1,0 +1,14 @@
+{
+  "system_msg": "You're an AI assistant that helps people to understand the content in an article.",
+
+  "get_keyword_from_pdf": {
+    "prompt_msg": "Now, use the provided text to extract maximum of 7 keywords along with the relationship between them.\n---\nTEXT\n",
+    "few_shot": {
+      "prompt_msg": "Use the provided text to extract maximum of 7 keywords along with the relationship between them.\n---\nTEXT\nIn the sprawling domain of technology, two fields that frequently capture headlines are Artificial Intelligence (AI) and Computer Science. These disciplines, rich in innovation and potential, house various subfields that are shaping the future. Among these, Machine Learning and Information Security stand out for their transformative impact and pivotal roles. This article delves into how Machine Learning falls under the umbrella of Artificial Intelligence, and similarly, how Information Security is a crucial aspect of Computer Science, shedding light on their significance and interconnections.\n",
+      "response": "\nKeyword 1: Artificial Intelligence \n Keyword 2: Machine Learning \n Relationship: Keyword 2 is a topic of Keyword 1\n Keyword 3: Computer Science\n Keyword 4: Information Security\n Relationship: Keyword 4 is a topic of Keyword 3"
+    }
+  },
+  "generate_mermaid_using_keyword": {
+    "prompt_msg": "Use the keywords and their relationships to generate a concept map using Mermaid code. Make sure that there are linkages to represent the relationships between the concepts on the map.\n---\nKEYWORDS\n"
+  }
+}
