@@ -1,4 +1,5 @@
 package edu.sjsu.articlevisualisationbackend.service;
+import edu.sjsu.articlevisualisationbackend.service.exception.InvalidPdfException;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
