@@ -1,62 +1,50 @@
 package edu.sjsu.articlevisualisationbackend.controller;
 
-import edu.sjsu.articlevisualisationbackend.service.CheckPdfSize;
-import edu.sjsu.articlevisualisationbackend.service.CheckUploadFile;
-import edu.sjsu.articlevisualisationbackend.service.PdfToText;
-import edu.sjsu.articlevisualisationbackend.service.SavePdfToDisk;
+import edu.sjsu.articlevisualisationbackend.service.*;
 import edu.sjsu.articlevisualisationbackend.service.exception.InvalidPdfLengthException;
 import edu.sjsu.articlevisualisationbackend.service.exception.InvalidUploadFileException;
-import edu.sjsu.articlevisualisationbackend.service.ChatGptDiagramGenerator;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Map;
-
-
 
 @RestController
 public class FileUploadController {
     private final SavePdfToDisk savePdfToDisk;
-    private final PdfToText pdfToText;
     private final CheckPdfSize checkPdfSize;
-    private final CheckUploadFile checkUploadFile;
-    private final ChatGptDiagramGenerator chatGptDiagramGenerator;
+    private final ChatGptDiagramGeneratorService chatGptDiagramGeneratorService;
 
     @Autowired
     public FileUploadController(SavePdfToDisk savePdfToDisk,
-                                PdfToText pdfToText,
                                 CheckPdfSize checkPdfSize,
-                                CheckUploadFile checkUploadFile,
-                                ChatGptDiagramGenerator chatGptDiagramGenerator) {
+                                ChatGptDiagramGeneratorService chatGptDiagramGeneratorservice) {
         this.savePdfToDisk = savePdfToDisk;
-        this.pdfToText = pdfToText;
         this.checkPdfSize = checkPdfSize;
-        this.checkUploadFile = checkUploadFile;
-        this.chatGptDiagramGenerator = chatGptDiagramGenerator;
+        this.chatGptDiagramGeneratorService = chatGptDiagramGeneratorservice;
     }
 
     @PostMapping(value = "/uploadPdf")
     public ResponseEntity<String> uploadPdf(@RequestParam("file") MultipartFile file) {
         try {
 
-            this.checkUploadFile.checkUploadFile(file);
+            CheckUploadFile checkUploadFile = new CheckUploadFile(file);
+            checkUploadFile.check();
 
             this.savePdfToDisk.setOriginalFile(file);
             String filePath = this.savePdfToDisk.saveTempPdf();
 
-            String fileText = this.pdfToText.pdf_to_text(filePath);
+            PdfToText pdfToText = new PdfToText(filePath);
 
-            this.checkPdfSize.check_pdf_size(fileText);
+            final String pdfText = pdfToText.getPdfTextContent();
 
-            this.chatGptDiagramGenerator.setPdfText(fileText);
-            final String mermaidCode = this.chatGptDiagramGenerator.generateMermaidCode();
+            this.checkPdfSize.check_pdf_size(pdfText);
+
+            this.chatGptDiagramGeneratorService.setPdfText(pdfText);
+            final String mermaidCode = this.chatGptDiagramGeneratorService.generateMermaidCode();
 
 
             return new ResponseEntity<>(mermaidCode, HttpStatus.OK);

@@ -4,11 +4,14 @@ import edu.sjsu.articlevisualisationbackend.service.exception.InvalidUploadFileE
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service
+
 public class CheckUploadFile {
+    MultipartFile file;
+    public CheckUploadFile(MultipartFile file) {
+        this.file = file;
+    }
 
-
-    public void checkUploadFile(MultipartFile file) throws InvalidUploadFileException {
+    public void check() throws InvalidUploadFileException {
         final boolean isPdf = this.isPdf(file);
         if  (!isPdf) {
             throw new InvalidUploadFileException("File is not a PDF");
