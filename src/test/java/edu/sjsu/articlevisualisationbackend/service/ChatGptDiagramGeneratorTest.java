@@ -23,10 +23,10 @@ public class ChatGptDiagramGeneratorTest {
                 "\n" +
                 "This is also rooted in history. For a significant portion of the 20th century retirement was based on a pension and your pension was based on how many years you worked for a company and your salary during that time. The idea was that you were guaranteed income from the company after your retirement. In some cases your pension could even be passed down to your children. It was a great deal! But like the dot com collapse in the early 2000’s, many pension programs were dissolved due to bankruptcy, mismanagement of funds, or other catastrophic investment losses, leading to the loss of retirement by hard working employees. The rise of the 401k retirement system was upon us. That system resulted in a retirement income that was portable, meaning you didn’t have to work your entire career for the same employer to have decent retirement savings. Hence, workers no longer have to rely on a company benefit (pension) to be able to retire.";
 
-        ChatGptDiagramGeneratorService chatGptDiagramGeneratorService = new ChatGptDiagramGeneratorService();
-        chatGptDiagramGeneratorService.setPdfText(ARTICLE);
+        ChatGptDiagramGenerator chatGptDiagramGenerator = new ChatGptDiagramGenerator(ARTICLE);
 
-        final String mermaidCode = chatGptDiagramGeneratorService.generateMermaidCode();
+
+        final String mermaidCode = chatGptDiagramGenerator.generateMermaidCode();
 
         System.out.println(mermaidCode);
     }
