@@ -6,7 +6,7 @@ ARG OPENAI_KEY
 WORKDIR /app
 COPY pom.xml .
 COPY src src
-RUN mvn clean package
+RUN mvn clean package -DmyProperty=${OPENAI_KEY}
 
 # Package stage
 FROM eclipse-temurin:17-jdk-focal
