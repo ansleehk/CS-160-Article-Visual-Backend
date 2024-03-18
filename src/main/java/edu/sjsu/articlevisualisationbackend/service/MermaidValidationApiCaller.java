@@ -15,16 +15,17 @@ import java.io.IOException;
 public class MermaidValidationApiCaller {
 
     HttpPost postRequest;
-    String mermaidCode;
+
+    private final String mermaidCode;
 
     final String URL = "https://d1doi45x0nyjfu.cloudfront.net/validate-mermaid";
 
-    public MermaidValidationApiCaller(String mermaidCode) {
 
+
+    public MermaidValidationApiCaller(String mermaidCode) {
         this.mermaidCode = mermaidCode;
         this.initHttp();
     }
-
     private void initHttp(){
         this.postRequest = new HttpPost(this.URL);
         StringEntity input = new StringEntity(
@@ -38,6 +39,7 @@ public class MermaidValidationApiCaller {
         final String JSON_KEY = "mermaidCode";
         final JSONObject jsonObject = new JSONObject();
         jsonObject.put(JSON_KEY, this.mermaidCode);
+
 
         return jsonObject.toString();
     }
@@ -56,10 +58,12 @@ public class MermaidValidationApiCaller {
             int statusCode = response.getStatusLine().getStatusCode();
 
 
+
             if (statusCode == 200) {
+
                 return this.readResponse(response);
             } else {
-                throw new Exception("Unknown error" + statusCode);
+                throw new Exception("Unknown error" + response);
             }
         } catch (Exception e) {
             e.printStackTrace();
