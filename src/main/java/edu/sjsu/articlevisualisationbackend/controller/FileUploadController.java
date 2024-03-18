@@ -6,6 +6,8 @@ import edu.sjsu.articlevisualisationbackend.service.PdfToText;
 import edu.sjsu.articlevisualisationbackend.service.SavePdfToDisk;
 import edu.sjsu.articlevisualisationbackend.service.exception.InvalidPdfLengthException;
 import edu.sjsu.articlevisualisationbackend.service.exception.InvalidUploadFileException;
+import edu.sjsu.articlevisualisationbackend.service.ChatGptDiagramGenerator;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 
 
 /**
@@ -25,19 +28,22 @@ public class FileUploadController {
     private final PdfToText pdfToText;
     private final CheckPdfSize checkPdfSize;
     private final CheckUploadFile checkUploadFile;
+    private final ChatGptDiagramGenerator chatGptDiagramGenerator;
 
     @Autowired
     public FileUploadController(SavePdfToDisk savePdfToDisk,
                                 PdfToText pdfToText,
                                 CheckPdfSize checkPdfSize,
-                                CheckUploadFile checkUploadFile) {
+                                CheckUploadFile checkUploadFile,
+                                ChatGptDiagramGenerator chatGptDiagramGenerator) {
         this.savePdfToDisk = savePdfToDisk;
         this.pdfToText = pdfToText;
         this.checkPdfSize = checkPdfSize;
         this.checkUploadFile = checkUploadFile;
+        this.chatGptDiagramGenerator = chatGptDiagramGenerator;
     }
 
-    @PostMapping("/uploadPdf")
+    @PostMapping(value = "/uploadPdf")
     public ResponseEntity<String> uploadPdf(@RequestParam("file") MultipartFile file) {
         try {
 
@@ -50,14 +56,21 @@ public class FileUploadController {
 
             this.checkPdfSize.check_pdf_size(fileText);
 
-            return new ResponseEntity<>(fileText, HttpStatus.OK);
+            this.chatGptDiagramGenerator.setPdfText(fileText);
+            final String mermaidCode = this.chatGptDiagramGenerator.generateMermaidCode();
+
+
+            return new ResponseEntity<>(mermaidCode, HttpStatus.OK);
 
         } catch (InvalidUploadFileException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+
+            return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
         } catch (InvalidPdfLengthException e){
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.PAYLOAD_TOO_LARGE);
+
+            return new ResponseEntity<String>(e.toString(), HttpStatus.PAYLOAD_TOO_LARGE);
         } catch (Exception e) {
-            return new ResponseEntity<>("Could not upload the file: " + file.getOriginalFilename() + "!", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            return new ResponseEntity<String>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

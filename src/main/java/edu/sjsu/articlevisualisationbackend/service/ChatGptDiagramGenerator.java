@@ -4,26 +4,29 @@ import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatMessage;
 import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
+import edu.sjsu.articlevisualisationbackend.service.exception.InvalidChatGptGeneration;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-
+@Service
 public class ChatGptDiagramGenerator {
 
-    OpenAiService service;
-    ChatCompletionRequest chatCompletionRequest;
-    List<ChatMessage> messageRecord = new ArrayList<>();
-    String pdfText;
-    JSONObject chatGptPrompt;
+    private OpenAiService service;
+    private ChatCompletionRequest chatCompletionRequest;
+    private List<ChatMessage> messageRecord = new ArrayList<>();
+
+    private String pdfText;
+    private JSONObject chatGptPrompt;
+
+
 
     final String OPERATION_USR_MSG_JSON_KEY = "prompt_msg";
     final String OPERATION_FEW_SHOT_JSON_KEY = "few_shot";
@@ -32,12 +35,15 @@ public class ChatGptDiagramGenerator {
 
 
 
-    public ChatGptDiagramGenerator(String PdfText) throws IOException {
-        this.pdfText = PdfText;
+    public ChatGptDiagramGenerator() throws IOException {
         this.initOpenAiService();
         this.initChatCompletionRequest();
         this.loadJsonPrompt();
         this.initSystemMessage();
+    }
+
+    public void setPdfText(String pdfText) {
+        this.pdfText = pdfText;
     }
 
     private void initOpenAiService() {
@@ -192,10 +198,45 @@ public class ChatGptDiagramGenerator {
         );
     }
 
-    public String generateMermaidCode() {
-        final String KEYWORDS_FROM_PDF = this.makeKeywordsRequest();
-        final String MERMAID_CODE = this.makeMermaidCodeRequest(KEYWORDS_FROM_PDF);
+    private String removeMermaidCodeHeadFoot(String mermaidCode){
+        final String MERMAID_CODE_HEAD = "```mermaid";
+        final String MERMAID_CODE_FOOT = "```";
 
-        return MERMAID_CODE;
+        return mermaidCode.replace(MERMAID_CODE_HEAD, "").replace(MERMAID_CODE_FOOT, "");
+    }
+
+    private boolean validateMermaidCode(String mermaidCode){
+        MermaidValidationApiCaller mermaidValidationApiCaller = new MermaidValidationApiCaller(mermaidCode);
+
+        return mermaidValidationApiCaller.validate();
+    }
+
+
+    private String generateReliableMermaidCode(String keywords) throws InvalidChatGptGeneration {
+        final int MAX_ATTEMPT_COUNT = 3;
+        int attemptCount = 0;
+        boolean isMermaidValid = false;
+        String mermaidCode;
+
+        do {
+            mermaidCode = this.makeMermaidCodeRequest(keywords);
+            mermaidCode = this.removeMermaidCodeHeadFoot(mermaidCode);
+            isMermaidValid = this.validateMermaidCode(mermaidCode);
+            attemptCount++;
+
+        } while (!isMermaidValid && attemptCount < MAX_ATTEMPT_COUNT);
+
+        if (isMermaidValid) {
+            return mermaidCode;
+        } else {
+            throw new InvalidChatGptGeneration("Failed to generate mermaid code");
+        }
+    }
+
+    public String generateMermaidCode() throws InvalidChatGptGeneration {
+        final String KEYWORDS_FROM_PDF = this.makeKeywordsRequest();
+        final String MERMAID_CODE = this.generateReliableMermaidCode(KEYWORDS_FROM_PDF);
+
+        return this.removeMermaidCodeHeadFoot(MERMAID_CODE);
     }
 }

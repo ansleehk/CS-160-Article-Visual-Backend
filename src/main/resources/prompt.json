@@ -9,6 +9,7 @@
     }
   },
   "generate_mermaid_using_keyword": {
-    "prompt_msg": "Use the keywords and their relationships to generate a concept map using Mermaid code. Make sure that there are linkages to represent the relationships between the concepts on the map.\n---\nKEYWORDS\n"
+    "prompt_msg": "Use the keywords and their relationships to generate a concept map using Mermaid code. Make sure that there are linkages to represent the relationships between the concepts on the map.\n **ONLY PROVIDE ME WITH THE MERMAID CODE**\n---\nKEYWORDS\n",
+    "few_shot": {}
   }
 }
