@@ -14,17 +14,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class FileUploadController {
-    private final SavePdfToDisk savePdfToDisk;
-    private final CheckPdfSize checkPdfSize;
-    private final ChatGptDiagramGeneratorService chatGptDiagramGeneratorService;
 
-    @Autowired
-    public FileUploadController(SavePdfToDisk savePdfToDisk,
-                                CheckPdfSize checkPdfSize,
-                                ChatGptDiagramGeneratorService chatGptDiagramGeneratorservice) {
-        this.savePdfToDisk = savePdfToDisk;
-        this.checkPdfSize = checkPdfSize;
-        this.chatGptDiagramGeneratorService = chatGptDiagramGeneratorservice;
+
+    public FileUploadController() {
+
+
     }
 
     @PostMapping(value = "/uploadPdf")
@@ -34,17 +28,24 @@ public class FileUploadController {
             CheckUploadFile checkUploadFile = new CheckUploadFile(file);
             checkUploadFile.check();
 
-            this.savePdfToDisk.setOriginalFile(file);
-            String filePath = this.savePdfToDisk.saveTempPdf();
+            SavePdfToDisk savePdfToDisk = new SavePdfToDisk();
+
+            savePdfToDisk.setOriginalFile(file);
+            String filePath = savePdfToDisk.saveTempPdf();
 
             PdfToText pdfToText = new PdfToText(filePath);
 
             final String pdfText = pdfToText.getPdfTextContent();
 
-            this.checkPdfSize.check_pdf_size(pdfText);
+            CheckPdfSize checkPdfSize = new CheckPdfSize();
 
-            this.chatGptDiagramGeneratorService.setPdfText(pdfText);
-            final String mermaidCode = this.chatGptDiagramGeneratorService.generateMermaidCode();
+            checkPdfSize.check_pdf_size(pdfText);
+
+            final ChatGptDiagramGenerator chatGptDiagramGenerator = new ChatGptDiagramGenerator(pdfText);
+
+            final String mermaidCode = chatGptDiagramGenerator.generateMermaidCode();
+
+            savePdfToDisk.removeTempPdf();
 
 
             return new ResponseEntity<>(mermaidCode, HttpStatus.OK);

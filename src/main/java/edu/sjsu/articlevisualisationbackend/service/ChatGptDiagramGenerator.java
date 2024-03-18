@@ -20,8 +20,7 @@ import java.util.List;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-@Service
-public class ChatGptDiagramGeneratorService {
+public class ChatGptDiagramGenerator {
 
     private OpenAiService service;
     private ChatCompletionRequest chatCompletionRequest;
@@ -39,11 +38,13 @@ public class ChatGptDiagramGeneratorService {
 
 
 
-    public ChatGptDiagramGeneratorService() throws IOException {
+    public ChatGptDiagramGenerator(String pdfText) throws IOException {
         this.initOpenAiService();
         this.initChatCompletionRequest();
         this.loadJsonPrompt();
         this.initSystemMessage();
+
+        this.pdfText = pdfText;
     }
 
     public void setPdfText(String pdfText) {
