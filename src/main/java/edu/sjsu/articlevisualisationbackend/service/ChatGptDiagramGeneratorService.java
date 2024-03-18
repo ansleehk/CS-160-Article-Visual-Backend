@@ -7,9 +7,13 @@ import com.theokanning.openai.service.OpenAiService;
 import edu.sjsu.articlevisualisationbackend.service.exception.InvalidChatGptGeneration;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.json.JSONObject;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,8 +95,13 @@ public class ChatGptDiagramGeneratorService {
 
 
     private void loadJsonPrompt() throws IOException {
-        final String PROMPT_FILE_PATH = "src/main/resources/prompt.json";
-        String jsonContent = new String(Files.readAllBytes(Paths.get(PROMPT_FILE_PATH)));
+        String jsonContent;
+        ClassPathResource resource = new ClassPathResource("prompt.json");
+
+        try (InputStream inputStream = resource.getInputStream()) {
+            jsonContent = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+        }
+
         this.chatGptPrompt = new JSONObject(jsonContent);
     }
 
