@@ -14,4 +14,4 @@ COPY --from=build /app/target/application.jar application.jar
 
 EXPOSE 8080
 
-ENTRYPOINT java -jar -DOPENAI_TOKEN=$OPENAI_TOKEN application.jar
+ENTRYPOINT java -jar -DOPENAI_KEY=$OPENAI_KEY application.jar
