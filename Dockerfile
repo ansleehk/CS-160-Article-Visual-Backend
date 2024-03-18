@@ -5,6 +5,8 @@ COPY pom.xml .
 COPY src src
 RUN mvn clean package
 
+ENV OPENAI_KEY $openai_key
+
 # Package stage
 FROM eclipse-temurin:17-jdk-focal
 COPY --from=build /app/target/application.jar application.jar
