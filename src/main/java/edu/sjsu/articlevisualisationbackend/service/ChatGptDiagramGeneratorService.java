@@ -17,7 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 @Service
-public class ChatGptDiagramGenerator {
+public class ChatGptDiagramGeneratorService {
 
     private OpenAiService service;
     private ChatCompletionRequest chatCompletionRequest;
@@ -28,14 +28,14 @@ public class ChatGptDiagramGenerator {
 
 
 
-    final String OPERATION_USR_MSG_JSON_KEY = "prompt_msg";
-    final String OPERATION_FEW_SHOT_JSON_KEY = "few_shot";
-    final String OPERATION_FEW_SHOT_PROMPT_JSON_KEY = "prompt_msg";
-    final String OPERATION_FEW_SHOT_RESPONSE_JSON_KEY = "response";
+    private final String OPERATION_USR_MSG_JSON_KEY = "prompt_msg";
+    private final String OPERATION_FEW_SHOT_JSON_KEY = "few_shot";
+    private final String OPERATION_FEW_SHOT_PROMPT_JSON_KEY = "prompt_msg";
+    private final String OPERATION_FEW_SHOT_RESPONSE_JSON_KEY = "response";
 
 
 
-    public ChatGptDiagramGenerator() throws IOException {
+    public ChatGptDiagramGeneratorService() throws IOException {
         this.initOpenAiService();
         this.initChatCompletionRequest();
         this.loadJsonPrompt();
@@ -147,7 +147,7 @@ public class ChatGptDiagramGenerator {
 
 
 
-    private String sendRequest(
+    private String makeRequest(
             String operationJsonKey,
             String promptMessageAppendix,
             boolean isHasFewShotResponse
@@ -180,7 +180,7 @@ public class ChatGptDiagramGenerator {
     private String makeKeywordsRequest(){
         final String OPERATION_JSON_KEY = "get_keyword_from_pdf";
 
-        return this.sendRequest(
+        return this.makeRequest(
                 OPERATION_JSON_KEY,
                 this.pdfText,
                 true
@@ -191,7 +191,7 @@ public class ChatGptDiagramGenerator {
     private String makeMermaidCodeRequest(String keywordText) {
         final String OPERATION_JSON_KEY = "generate_mermaid_using_keyword";
 
-        return this.sendRequest(
+        return this.makeRequest(
                 OPERATION_JSON_KEY,
                 keywordText,
                 false

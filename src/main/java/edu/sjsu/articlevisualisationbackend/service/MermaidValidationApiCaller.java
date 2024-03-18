@@ -14,12 +14,11 @@ import java.io.IOException;
 
 public class MermaidValidationApiCaller {
 
-    HttpPost postRequest;
+    private HttpPost postRequest;
 
     private final String mermaidCode;
 
-    final String URL = "https://d1doi45x0nyjfu.cloudfront.net/validate-mermaid";
-
+    final String API_URL = "https://d1doi45x0nyjfu.cloudfront.net/validate-mermaid";
 
 
     public MermaidValidationApiCaller(String mermaidCode) {
@@ -27,7 +26,7 @@ public class MermaidValidationApiCaller {
         this.initHttp();
     }
     private void initHttp(){
-        this.postRequest = new HttpPost(this.URL);
+        this.postRequest = new HttpPost(this.API_URL);
         StringEntity input = new StringEntity(
                 this.jsonBody(), "UTF-8"
         );
@@ -56,8 +55,6 @@ public class MermaidValidationApiCaller {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpResponse response = httpClient.execute(this.postRequest);
             int statusCode = response.getStatusLine().getStatusCode();
-
-
 
             if (statusCode == 200) {
 

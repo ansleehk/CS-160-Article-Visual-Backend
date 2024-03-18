@@ -9,26 +9,28 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Service _ Convert PDF to Text.
+ * Convert PDF to Text.
  */
-@Service
 public class PdfToText {
 
-    public PdfToText() {
+    private String pdfFilePath;
+    private PDDocument pdfFile;
+
+    public PdfToText(String pdfFilePath) throws IOException {
+        this.pdfFilePath = pdfFilePath;
+        this.openPdf();
     }
 
-    public String pdf_to_text(String file_path) {
-        try {
-            File pdfFile = new File(file_path);
-            PDDocument document = Loader.loadPDF(pdfFile);
+    private void openPdf() throws IOException {
+        File pdfFile = new File(pdfFilePath);
+        this.pdfFile = Loader.loadPDF(pdfFile);
+    }
 
-            PDFTextStripper pdfStripper = new PDFTextStripper();
-            String text = pdfStripper.getText(document);
+    public String getPdfTextContent() throws IOException {
+        final PDFTextStripper pdfStripper = new PDFTextStripper();
+        final String text = pdfStripper.getText(this.pdfFile);
 
-            document.close();
-            return(text);
-        } catch (IOException e) {
-            return "";
-        }
+        this.pdfFile.close();
+        return(text);
     }
 }

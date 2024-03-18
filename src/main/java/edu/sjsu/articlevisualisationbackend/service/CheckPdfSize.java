@@ -12,7 +12,9 @@ import java.util.StringTokenizer;
 public class CheckPdfSize {
     public static final int PDF_MAX_TOKEN_LIMIT = 3500;
 
-    public CheckPdfSize() {}
+    public CheckPdfSize() {
+
+    }
 
     public int check_pdf_size(String fileText) throws InvalidPdfException {
         int count = count_word(fileText);

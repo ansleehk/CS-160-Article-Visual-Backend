@@ -6,7 +6,7 @@ ARG OPENAI_KEY
 WORKDIR /app
 COPY pom.xml .
 COPY src src
-RUN mvn clean package -DmyProperty=${OPENAI_KEY}
+RUN mvn clean package
 
 # Package stage
 FROM eclipse-temurin:17-jdk-focal
@@ -14,4 +14,4 @@ COPY --from=build /app/target/application.jar application.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "application.jar"]
+ENTRYPOINT java -jar -DOPENAI_TOKEN=$OPENAI_TOKEN application.jar
