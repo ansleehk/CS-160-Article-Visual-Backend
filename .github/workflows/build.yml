@@ -36,4 +36,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Article-Visual-Backend -Dsonar.projectName='Article-Visual-Backend'
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=Article-Visual-Backend -Dsonar.projectName='Article Visualisation'
